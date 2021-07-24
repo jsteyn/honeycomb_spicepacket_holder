@@ -30,6 +30,8 @@ difference() {
 }
 */
 
+include<keyhole.scad>;
+
 d=10;
 thickness=2;
 s=0.8;
@@ -40,8 +42,12 @@ num_offset = floor(numX/2);
 a = d / 2;
 ir = a * sqrt(3) / 2;
 sX = tan(60)*sqrt(3)*a/((d - a)*2);
-width = num_offset*(d + a + sX) + (numX%2==1 ? sX/2 + d - (d - a)/2 : 0) -sX/2 + (d - a)/2;
-height = (numY + 0.5)*(ir*2 + s) - s;
+width = (num_offset*(d + a + sX) + (numX%2==1 ? sX/2 + d - (d - a)/2 : 0) -sX/2 + (d - a)/2)+10;
+height = ((numY + 0.5)*(ir*2 + s) - s) + 10;
+depth = 30;
+diameter=5;
+
+// FRONT PANEL WITH HEXAGONS
 difference() {
     translate([-width / 2, -height / 2, 0]) {
         cube([width, height, 2]);
@@ -49,6 +55,44 @@ difference() {
     
     hexagon_matrix();
 }
+
+//BACK PANEL
+difference() {
+    translate([-width/2, -height/2, -depth]) {
+        cube([width, height, 2]);
+    }
+    translate([-width/2+17,height/2-30,-depth]) {
+        keyhole(diameter=diameter);
+    }
+    translate([width/2-17,height/2-30,-depth]) {
+        keyhole(diameter=diameter);
+    }
+    translate([-width/2+17,-height/2+30,-depth]) {
+        keyhole(diameter=diameter);
+    }
+    translate([width/2-17,-height/2+30,-depth]) {
+        keyhole(diameter=diameter);
+    }
+    translate([-(width-10)/2, -10, -depth]) {
+        cube([width-10,30,thickness]);
+    }
+    translate([-(width-10)/2, -50, -depth]) {
+        cube([width-10,23,thickness]);
+    }
+}
+translate([-width/2, -height/2, - depth]) {
+    cube([width, thickness, depth]);
+}
+translate([-width/2, -height/2, -depth]) {
+    cube([thickness, height, depth]);
+}
+translate([width/2-thickness, -height/2, -depth]) {
+    cube([thickness, height, depth]);
+}
+
+echo(Width=width);
+echo(Height=height);
+echo(Slot=diameter/3*2);
 
 module box(a,b,c,d) {
 
